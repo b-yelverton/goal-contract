@@ -161,8 +161,9 @@ post and I will say so. Above it, the next artifacts are the compilers into
 Spec Kit and Kiro formats; the contract is designed to land on their rails,
 not replace them.
 
-Signup: [[SIGNUP LINK — Brett fills]]. If you have ever watched an agent
-build the wrong thing beautifully, bring me that feature.
+Signup: https://tally.so/r/QKaoxl — five seats, week of Aug 3 or Aug 10. If
+you have ever watched an agent build the wrong thing beautifully, bring me
+that feature.
 
 ---
 
