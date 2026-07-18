@@ -1,70 +1,64 @@
-# Specs are the new code. Intent needs provenance.
+# My agents kept building the wrong thing, so I started asking for receipts
+
+*Specs are the new code. Intent needs provenance.*
 
 ---
 
-## 1. The PRD was compiled for human engineers
+## 1. The failure I kept paying for
 
-For twenty years, the product requirements document has been a lossy
-compression format. Product intent (what a user actually said, what the
-numbers actually show) gets squeezed into prose that a human engineer
-re-expands into code, filling the gaps with hallway conversations, taste, and
-ten years of knowing what the PM probably meant. The gaps were load-bearing.
-Humans are good at gaps.
+I'm a PM by day. At night I run a small fleet of coding agents against my own
+projects, and the failure mode I know best isn't the agent that crashes. It's
+the agent that builds the wrong thing, beautifully. Two thousand lines that
+compile, pass review, and solve a problem nobody has.
 
-Coding agents do not do hallway conversations.
+When a human engineer misunderstands a requirement, they wander off and come
+back with questions. My agents come back with working code and total
+confidence, and afterward I can't reconstruct which instruction of mine they
+were obeying. The code isn't the expensive part. The expensive part is not
+being able to answer a basic question: which line of what I asked for was
+ever true?
 
-When you hand an agent a PRD, it does not ask you what you meant. It builds
-what you wrote, at machine speed, with perfect confidence, including the parts
-you wrote carelessly at 11pm. The industry response has been to write better
-specs: sharper prose, more structure, Given/When/Then everywhere. That helps.
-It also misses the point, because the problem was never the spec's grammar.
-The problem is that the spec arrives at the agent's door with no chain of
-custody. Nothing in the artifact says *which line of this was ever true*: who
-said it, when, in what words, with what numbers behind it.
+Some of this is just what PRDs are. They were compiled for human engineers:
+intent squeezed into prose, gaps filled by hallway conversations, taste, and
+ten years of knowing what the PM probably meant. Humans are good at gaps.
+Agents don't do hallway conversations. They build what you wrote, at machine
+speed, including the parts you wrote carelessly at 11pm.
 
-The artifact an agent needs is not a document that persuades a human. It is a
-contract that executes, with a finish line the agent can check by running
-something and provenance a human can audit afterward. I have been running
-such an artifact in my own dispatch system for months. This week I extracted
-it into a standalone schema and a Claude Code skill, and I want five other
-people to run it before I believe it.
+What I started doing, after one incident I'll get to: every requirement I
+hand an agent has to carry its receipt. The ticket, the quote, the number
+that caused it. This post is the artifact that fell out of that rule, how it
+actually behaves, and where I think it's probably wrong. I'm posting it
+because most of it cost me agent compute and one embarrassing evening to
+learn, and it seems wasteful for everyone to learn it the same way.
 
-## 2. A spec without evidence is just a prompt
+## 2. What I found when I went looking
 
-Start with the honest part. Spec-driven development is the loudest
-conversation in dev tooling right now, and the spec layer is good: GitHub's
-Spec Kit has 122k stars and thirty agent integrations, AWS's Kiro turns
-prompts into requirements, designs, and tasks, BMAD-METHOD has 50k stars and
-a PM persona. If you want a free, well-maintained spec format, you are
-spoiled. This is not a complaint about that layer, and what I built does not
-compete with it.
+Before building anything, I went looking for who already solves this. The
+spec tools are good: GitHub's Spec Kit (122k stars, thirty agent
+integrations), AWS's Kiro, BMAD-METHOD (50k stars). Free, maintained, and not
+something I'm competing with. But every one of them starts the same way: an
+engineer types a prompt into an IDE. Spec Kit even ships a PM bundle, and
+what it helps you do is write a better prompt. The spec is only ever as true
+as that prompt.
 
-But look at what those specs are made *from*. Every spec-half tool starts the
-same way: an engineer types a prompt into an IDE. The spec is only ever as
-true as that prompt. Meanwhile every PM-side tool (the ChatPRDs, the feedback
-synthesizers, the discovery platforms) stops at a human-readable document.
-Between "what users actually said" and "what the agent was told to build,"
-there is exactly nothing. The discovery world and the spec world each end at
-their own border. Intent crosses that border alone and loses fidelity at
-every step.
+The PM tools I know end at the other border. Feedback synthesizers, discovery
+platforms: they produce a human-readable doc and stop. Between "what users
+actually said" and "what the agent gets told to build," nothing carries the
+why across. That's the gap I kept falling into.
 
-That is the hole: a missing *bridge*, not a missing spec format. Intent with
-provenance, compiled into whatever your agent harness already reads.
+So the rule I work from now: a spec without evidence is just a prompt. I'd
+never merge code with no history. I got tired of dispatching intent with
+none.
 
-Why does provenance matter so much? Because agents fail differently than
-humans. A human engineer who misunderstands a requirement wanders off for a
-day and comes back with questions. An agent that misunderstands produces
-thousands of lines of plausible, reviewable, *wrong*, and the wrongness
-surfaces weeks later, when nobody can reconstruct why the requirement existed.
-Without evidence attached to the requirement, you cannot even triage: was the
-agent wrong, or was the spec wrong, or was the *request* wrong? A spec without
-evidence is a prompt with ceremony. You would not merge code with no history;
-you should not dispatch intent with no provenance.
+And when something does go wrong, provenance is what makes it triageable.
+Without it, I can't tell whether the agent was wrong, the spec was wrong, or
+the request was wrong. Those have completely different fixes, and I was
+guessing which one to apply.
 
-## 3. The contract: seven fields, one of which is the point
+## 3. The contract
 
-The artifact is a **goal contract**: one Markdown file, machine-checkable
-frontmatter on top, human prose below. Seven fields:
+The artifact that fell out is a goal contract: one Markdown file,
+machine-checkable frontmatter on top, human prose below. Seven fields:
 
 1. `goal`: one sentence, outcome-shaped. What is true in the world when this
    is done, not what work is performed.
@@ -87,34 +81,43 @@ frontmatter on top, human prose below. Seven fields:
    ticket, the interview transcript, the usage query, with the actual words
    or numbers *quoted*, not summarized.
 
-The seventh field is the product. The first six make a contract executable;
-the seventh makes it *accountable*. And it is enforced mechanically: the
-reference validator fails the contract (exit 1, no dispatch) if any criterion
-lacks evidence. A refusal, not a lint warning.
+The seventh field is why I'm writing this post. The first six make a contract
+executable. The seventh makes it checkable, and it's enforced mechanically:
+the validator fails the contract (exit 1, no dispatch) if any criterion lacks
+evidence. A refusal, not a lint warning.
 
-The discipline cuts both ways. When I ran the schema's own smoke test,
-feeding a raw feature request ("users keep asking for a CSV export of the
-weekly digest") through the skill, the drafting agent quoted the support
-ticket verbatim ("I paste it into our board pack manually every Friday"),
-quoted the interview ("I don't want a dashboard, I want a file"), and quoted
-the usage pull (37 of 210 workspaces, 4+ weeks running). Then it added a
-security criterion nobody asked for (every request for an export is also a
-request to scope that export to the right workspace) and, because the schema
-forced it to cite evidence for that too, it had to stop and disclose in
-prose: *not user-requested; mandatory engineering guardrail.* That disclosure
-is the system working. Provenance keeps agents honest, and it keeps the
-honest parts visible.
+The part I didn't design: when I ran the schema's own smoke test, feeding a
+raw feature request ("users keep asking for a CSV export of the weekly
+digest") through the skill, the drafting agent quoted the support ticket
+verbatim ("I paste it into our board pack manually every Friday"), quoted the
+interview ("I don't want a dashboard, I want a file"), and quoted the usage
+pull (37 of 210 workspaces, 4+ weeks running). Then it added a security
+criterion nobody asked for (every request for an export is also a request to
+scope that export to the right workspace) and, because the schema forced it
+to cite evidence for that too, it stopped and disclosed in prose: *not
+user-requested; mandatory engineering guardrail.* I didn't write that
+behavior in. It fell out of the field being required.
 
-One more rule the schema enforces by culture rather than code: never invent
-evidence. A contract with fabricated provenance is worse than no contract; it
-launders a guess into a receipt. If a criterion has no evidence, that is a
-*finding about the feature request*, and the correct move is to gather the
-evidence or cut the criterion.
+Now the honest limit, because it's the first thing a skeptical reader should
+ask about: the validator checks that a link exists, not that the link is
+true. I can't make a tool verify that a quote is real, and I won't pretend
+otherwise. What I can do is make fabrication leave fingerprints. The excerpt
+field forces the actual words to be written down, attached to a source, next
+to the criterion they claim to justify. Presence is mechanical; truth is
+audit; and audit is cheap precisely because everything is quoted in place. A
+hallucinated PRD leaves no trail at all. A fabricated receipt leaves a
+written one, in the author's own hand.
 
-## 4. This runs nightly; next week it runs in public
+The companion rule is cultural, and I'd rather say that plainly than dress it
+up: never invent evidence. If a criterion has no evidence, that's a finding
+about the feature request, and the right move is to gather the evidence or
+cut the criterion. A schema can make lying visible. It can't make people
+honest. I think that's still worth having.
 
-This is not a proposal. I am a working PM, and the dispatch system this schema
-was extracted from runs my own agent fleet nightly. Concretely, that system:
+## 4. It runs every night, and I know you can't check that
+
+The schema isn't a proposal. It was extracted from a dispatch system I run
+against my own agent fleet every night. That system:
 
 - compiles the contract from the issue **before the first model call** and
   persists it, so the contract never lives only in a prompt;
@@ -127,44 +130,52 @@ was extracted from runs my own agent fleet nightly. Concretely, that system:
   evidence was gathered, the specific blocker, and the next input needed. And
   the issue never advances on vibes.
 
-The evidence field came out of a specific incident. A redelivered webhook
-once queued a second agent against work already in flight: two agents, one
-branch, two full turn budgets burned in sixty seconds. The fix, an atomic
-admission guard, is in the system now, and its contract cites that incident
-as evidence. That is the loop working as designed: the failure becomes a
-link, the link becomes a criterion, the criterion becomes a test.
-
-Next week I am running the full loop on my live product, in public: real user
+You can't inspect any of that. The system is private, tangled in my homelab,
+and full of references to people and products that aren't mine to share. So
+it's n=1, self-reported, by the person selling the schema. Grade the repo
+instead: the example contract in it is reconstructed from the system's real
+test fixtures, and the validator runs on your machine in seconds. And it's
+why next week I'm running the whole loop in public, on my live product: real
 feedback in → contract proposed with evidence → contract compiled → coding
 agent implements unsupervised → I accept or reject against the criteria.
 Everything documented; the loop diary publishes here as it happens.
 
-## 5. The ask: five people, one feature each
+The evidence field itself came out of an incident, not a principle. A
+redelivered webhook once queued a second agent against work already in
+flight: two agents, one branch, two full turn budgets burned in sixty
+seconds. The fix, an atomic admission guard, is in the system now, and its
+contract cites that incident as evidence. That's the loop working the way I
+want it to: the failure becomes a link, the link becomes a criterion, the
+criterion becomes a test.
 
-The schema, a worked example, the Claude Code skill, and the validator are
-public today: https://github.com/b-yelverton/goal-contract. Files in, files
-out; no accounts, no hosted anything.
+## 5. What I'm asking
 
-What I do not have is other people's intent. So: I am looking for **five
-working PMs or agent-heavy founders** to each run one real feature through
-the loop in weeks 3–4. Bring a feature request and its evidence: tickets,
-interviews, usage pulls. Run it through the skill (twenty minutes), hand the
-contract to your coding agent, and tell me two numbers: what percentage of
-the emitted contract you rewrote before dispatching, and whether you would
-use it again.
+What I don't have is other people's intent. So I'm looking for five working
+PMs or agent-heavy founders to each run one real feature through the loop in
+weeks 3–4. Bring a feature request and its evidence: tickets, interviews,
+usage pulls. Run it through the skill (twenty minutes), hand the contract to
+your coding agent, and tell me two numbers: what percentage of the contract
+you rewrote before dispatching, and whether you'd use it again.
 
 My bar, set in advance: at least three of five dispatch with under 20%
-rewrites and say they would use it again. Below that, this was a good blog
-post and I will say so. Above it, the next artifacts are the compilers into
-Spec Kit and Kiro formats; the contract is designed to land on their rails,
-not replace them.
+rewrites and say they'd use it again. Below that, this was a good blog post
+and I'll say so. Above it, the next artifacts are the compilers into Spec Kit
+and Kiro formats; the contract is designed to land on their rails, not
+replace them.
+
+And if one of those teams ships an evidence field first: good. The pattern
+matters more than my implementation of it. I'd just like it to start here.
+
+The schema, a worked example, the skill, and the validator are public today:
+https://github.com/b-yelverton/goal-contract. Files in, files out; no
+accounts, no hosted anything.
 
 Signup: https://tally.so/r/QKaoxl — five seats, week of Aug 3 or Aug 10. If
-you have ever watched an agent build the wrong thing beautifully, bring me
-that feature.
+you've ever watched an agent build the wrong thing beautifully, bring me that
+feature. I'd like to learn from it.
 
 ---
 
 *Brett Yelverton is a product manager who runs a home-built agent dispatch
-system. The goal-contract schema is extracted from production code, not
-invented for the post.*
+system at night. The goal-contract schema is extracted from that system, not
+invented for this post.*
