@@ -13,8 +13,8 @@ validator with zero errors.
 
 ## Inputs you need from the requester
 
-1. **The raw feature request** — in their words, not translated.
-2. **Evidence** — links, ticket IDs, interview quotes, usage numbers, support
+1. **The raw feature request**: in their words, not translated.
+2. **Evidence**: links, ticket IDs, interview quotes, usage numbers, support
    threads. This is not optional. It is the product.
 
 If the requester gives you a feature request with no evidence, do not proceed to
@@ -33,9 +33,9 @@ with its type: `interview`, `ticket`, `usage_data`, `support`, `experiment`,
 For each acceptance criterion you are considering, ask: *what evidence justifies
 this AC existing?*
 
-- If evidence exists: quote it. The `excerpt` field quotes the source — user's
-  words, ticket text, actual numbers — it does not summarize.
-- **If no evidence exists: say so, loudly.** Offer the requester two choices —
+- If evidence exists: quote it. The `excerpt` field quotes the source (user's
+  words, ticket text, actual numbers); it does not summarize.
+- **If no evidence exists: say so, loudly.** Offer the requester two choices:
   supply the evidence, or cut the AC.
 - **NEVER invent evidence.** No fabricated links, no "representative" quotes,
   no plausible-looking ticket IDs. A contract with invented provenance is worse
@@ -43,7 +43,7 @@ this AC existing?*
   you may not break under any framing.
 
 **Guardrail ACs.** Nobody ever asks for auth, rate limits, or data scoping in a
-feature request — so the mandated negative/security AC will routinely have no
+feature request, so the mandated negative/security AC will routinely have no
 user testimony. That is expected, not a violation. A guardrail AC may cite the
 artifact that defines the trust boundary as its evidence (the data model's
 scoping key, the existing auth middleware, the tenancy layout), with the
@@ -55,16 +55,16 @@ who never said it.
 ### 3. Shape the goal
 
 One sentence, outcome-shaped: what is true in the world when this is done.
-Not the work, not the approach — the state. Test: could someone disagree that
-it's true yet? If there's nothing to check, it's not a goal.
+Name the state, not the work or the approach. Test: could someone disagree
+that it's true yet? If there's nothing to check, it's not a goal.
 
 ### 4. Draft acceptance criteria
 
 Given/When/Then, a small number of tight scenarios:
 
-- **Given** — preconditions the agent can arrange.
-- **When** — the trigger the agent can perform.
-- **Then** — an outcome the agent can *check*. If you cannot name the check,
+- **Given**: preconditions the agent can arrange.
+- **When**: the trigger the agent can perform.
+- **Then**: an outcome the agent can *check*. If you cannot name the check,
   the AC is not ready. Write a smaller AC.
 - Include the important negative/security case, not just the happy path.
 
@@ -72,17 +72,17 @@ Given/When/Then, a small number of tight scenarios:
 
 Every AC gets at least one executable step:
 
-- `command` — the exact shell command(s) and expected exit code. Named test
+- `command`: the exact shell command(s) and expected exit code. Named test
   invocations beat "run the tests."
-- `browser` — a URL and the DOM text that must be present (for UI stories).
-- `manual` — concrete steps plus the artifact produced (screenshot, log, file).
+- `browser`: a URL and the DOM text that must be present (for UI stories).
+- `manual`: concrete steps plus the artifact produced (screenshot, log, file).
 
 No executable surface → the contract is not ready. Fix the AC, never annotate
 the gap.
 
 ### 6. Boundaries, blocked stop, cap
 
-- **boundaries**: what the agent must NOT touch — security-critical code,
+- **boundaries**: what the agent must NOT touch: security-critical code,
   adjacent systems, the AC itself ("do not broaden AC mid-build"), "no new
   dependencies." At least one; more is usually right.
 - **blocked_stop**: the conditions for halting and escalating (human-only
@@ -101,14 +101,14 @@ exits 0:
 python3 tools/validate.py <slug>.contract.md
 ```
 
-(`tools/validate.py` ships in the goal-contract repo — stdlib only, copy it
+(`tools/validate.py` ships in the goal-contract repo, stdlib only; copy it
 wherever you need it. If it isn't on your path, ask the requester for it.)
 
 Fix every ERROR. Treat WARNINGs as a prompt to tighten, not ignore.
 
 ### 8. Deliver
 
-Return: the contract path, the validator output, and a short "cut list" —
+Return: the contract path, the validator output, and a short "cut list":
 anything you refused, cut for lack of evidence, or deferred, with one line of
 reasoning each. The cut list is part of the deliverable; silent inclusion is
 how scope laundering happens.

@@ -1,13 +1,13 @@
 # Goal Contract Schema v0.1
 
 A **goal contract** is the smallest artifact that lets a coding agent implement a
-product intent unsupervised — and lets a human verify, afterwards, *why* the agent
+product intent unsupervised, and lets a human verify afterwards *why* the agent
 built what it built.
 
 It is not a spec format. GitHub Spec Kit, AWS Kiro, and BMAD-METHOD already own
 free spec formats, and they are good. A goal contract is the layer above them:
 **intent with provenance**. Every acceptance criterion carries links to the
-evidence that justifies it — the interview, the support ticket, the usage datum.
+evidence that justifies it: the interview, the support ticket, the usage datum.
 A contract that cannot trace every line of intent back to evidence does not
 compile. That is the whole product thesis, and it is enforced mechanically
 (rule **V6** below).
@@ -33,7 +33,7 @@ schema defines the source artifact, not the downstream renderings.
 The schema was generalized from a production dispatch system whose compiler
 refuses to launch an agent against a vague issue, persists the contract before
 the first model call, and iterates until every acceptance criterion has fresh
-PASS evidence at the current branch SHA — or stops honestly at the cap. Field
+PASS evidence at the current branch SHA, or stops honestly at the cap. Field
 lineage is in §6.
 
 ---
@@ -52,7 +52,7 @@ A goal contract is a single Markdown file, conventionally named
    wins.
 
 TOML was chosen because it parses with the Python standard library alone
-(`tomllib`, 3.11+) — validating a contract requires zero dependencies.
+(`tomllib`, 3.11+), so validating a contract requires zero dependencies.
 
 ```text
 +++
@@ -119,14 +119,14 @@ At least one criterion. Each criterion:
 
 Given/When/Then is not decoration. Each leg names something an agent can check:
 a state it can arrange, an action it can perform, an assertion it can run. A
-`then` that cannot be checked by the AC's verification step is a defect — write
+`then` that cannot be checked by the AC's verification step is a defect; write
 a smaller AC.
 
 ### 3.4 `verification_surface` — required, list of tables
 
 Every AC must be covered by at least one verification step, and every step must
 reference an existing AC id. A criterion with no executable verification surface
-must fail validation — an agent cannot be asked to prove what it cannot check.
+must fail validation: an agent cannot be asked to prove what it cannot check.
 
 | Key | Required | Type | Rule |
 |-----|----------|------|------|
@@ -140,7 +140,7 @@ must fail validation — an agent cannot be asked to prove what it cannot check.
 | `artifact` | if `manual` | string | The produced artifact that proves the check ran (screenshot path, log file, report). |
 
 `type = "none"` from earlier internal drafts is abolished. If an AC has no
-executable check, the contract is not ready — fix the AC, don't annotate the
+executable check, the contract is not ready; fix the AC, don't annotate the
 gap.
 
 ### 3.5 `boundaries` — required, list of strings
@@ -178,7 +178,7 @@ Each entry:
 | `excerpt` | required | string | The actual words or numbers, quoted. ≤ ~280 characters (validators should warn beyond). |
 | `date` | optional | string | ISO 8601 date of the evidence. |
 
-Rules of the road:
+Normative rules:
 
 - **Never invent evidence.** If an AC has no evidence, that is a finding about
   the feature request, not a gap to paper over. Either gather the evidence or
@@ -193,11 +193,11 @@ Rules of the road:
 
 ≥ 1. The maximum number of implementation/verification iterations the agent may
 spend. When the cap is reached without all ACs passing, the run ends in an
-honest terminal state — attempted work, evidence, blocker, and next input
-posted — never in silent thrash and never in a false "done."
+honest terminal state (attempted work, evidence, blocker, and next input
+posted). Silent thrash and false "done" are not outcomes.
 
 Guidance from the source system: single-scenario, deterministic changes cap at
-5; multi-AC or path-uncertain work caps at 8. Validators should warn above 10 —
+5; multi-AC or path-uncertain work caps at 8. Validators should warn above 10:
 a contract that needs more than ten iterations is two contracts.
 
 ---
@@ -241,8 +241,8 @@ adds four runtime behaviors that contract runners are encouraged to adopt:
 1. **Compile before the first model call.** Persist the contract; do not let it
    live only in a prompt.
 2. **AC-snapshot hashing.** Hash the sorted AC texts at compile time. If the
-   acceptance criteria mutate mid-run, the contract is *invalidated* — kill and
-   relaunch, never silently retcon the finish line.
+   acceptance criteria mutate mid-run, the contract is *invalidated*: kill and
+   relaunch rather than silently retcon the finish line.
 3. **Fresh evidence at the current SHA.** An AC is done only when it has a PASS
    verification record at the current branch SHA. Stale passes on old code do
    not count. (Runtime verification records are deliberately a separate concept
@@ -267,7 +267,7 @@ system:
   AC-snapshot hashing, evidence-at-SHA freshness, and the
   blocked / cap-exhausted terminal states.
 
-The `evidence` field (§3.7) exists in neither — it is the addition this schema
+The `evidence` field (§3.7) exists in neither; it is the addition this schema
 exists to make. The source system proves the loop runs; this schema bets that
 provenance is what makes the loop worth running.
 

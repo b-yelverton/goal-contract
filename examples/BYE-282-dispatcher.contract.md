@@ -69,7 +69,7 @@ expected_exit = 0
 *Example contract for schema v0.1. The feature is real: it is the dispatch
 compiler this schema was extracted from, reconstructed from its own test
 fixtures. Evidence entries that point at Brett's private Linear instance are
-marked illustrative; the test-suite pointer is a real, resolvable reference.*
+marked illustrative. The test-suite pointer is a real, resolvable reference.*
 
 ## Context
 
@@ -80,9 +80,9 @@ against work already in flight.
 
 ## Why these two ACs
 
-AC1 is the core behavior — the contract is *compiled*, so the finish line is
+AC1 is the core behavior: the contract is *compiled*, so the finish line is
 fixed before the first model call, not negotiated mid-run. AC2 is the failure
 mode that cost real money: one duplicate webhook delivery, two agents, one
 branch. Both ACs trace to evidence: an operator ticket for the behavior, and an
 admissions-log incident plus a concurrency ticket for the guard. If either link
-breaks, the AC is suspect — that is the point of the field.
+breaks, the AC is suspect. That is the point of the field.
