@@ -144,8 +144,8 @@ Everything documented. [[LINK TO WEEK-2 THREAD/REPO — Brett fills]]
 ## 5. The ask: five people, one feature each
 
 The schema, a worked example, the Claude Code skill, and the validator are
-public today: [[REPO URL — Brett fills]]. Files in, files out; no accounts, no
-hosted anything.
+public today: https://github.com/b-yelverton/goal-contract. Files in, files
+out; no accounts, no hosted anything.
 
 What I do not have is other people's intent. So: I am looking for **five
 working PMs or agent-heavy founders** to each run one real feature through
