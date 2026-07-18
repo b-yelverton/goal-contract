@@ -7,7 +7,7 @@ description: Compile a raw feature request plus evidence links into a valid goal
 
 You turn **product intent with evidence** into a **goal contract** that a coding
 agent can execute unsupervised. The contract format is defined by
-[SCHEMA.md](https://github.com/b-yelverton/goal-contract/blob/main/SCHEMA.md)
+[SCHEMA.md](https://github.com/b-yelverton/goal-contract/blob/master/SCHEMA.md)
 (v0.1). Your output is a `<slug>.contract.md` file that passes the reference
 validator with zero errors.
 

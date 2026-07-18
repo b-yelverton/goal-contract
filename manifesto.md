@@ -1,7 +1,5 @@
 # Specs are the new code. Intent needs provenance.
 
-*Draft for Brett, pre-red-team. Placeholders marked `[[...]]`. Humanizer pass applied (29-pattern audit).*
-
 ---
 
 ## 1. The PRD was compiled for human engineers
@@ -139,7 +137,7 @@ link, the link becomes a criterion, the criterion becomes a test.
 Next week I am running the full loop on my live product, in public: real user
 feedback in → contract proposed with evidence → contract compiled → coding
 agent implements unsupervised → I accept or reject against the criteria.
-Everything documented. [[LINK TO WEEK-2 THREAD/REPO — Brett fills]]
+Everything documented; the loop diary publishes here as it happens.
 
 ## 5. The ask: five people, one feature each
 
