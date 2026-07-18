@@ -8,8 +8,17 @@
 
 I'm a PM by day. At night I run a small fleet of coding agents against my own
 projects, and the failure mode I know best isn't the agent that crashes. It's
-the agent that builds the wrong thing, beautifully. Two thousand lines that
-compile, pass review, and solve a problem nobody has.
+the agent that builds the wrong thing, beautifully.
+
+One of these is still sitting in my repo. A couple of weeks ago I was
+building a skill router: a piece of my agent config that was supposed to load
+and trial skills without dumping the whole skill universe into context. I
+never compiled a contract for it. I handed the agents direction in prose, run
+after run, and they kept making things. Probably well-coded things. None of
+it was what I asked for, none of it actionable, and every run drifted further
+from what I meant. Reverting it all eventually cost more than it was worth,
+so I abandoned it. The code is still there today: roughly nine hundred lines
+of plausible, reviewable, wrong, tests included.
 
 When a human engineer misunderstands a requirement, they wander off and come
 back with questions. My agents come back with working code and total
@@ -18,28 +27,29 @@ were obeying. The code isn't the expensive part. The expensive part is not
 being able to answer a basic question: which line of what I asked for was
 ever true?
 
-Some of this is just what PRDs are. They were compiled for human engineers:
-intent squeezed into prose, gaps filled by hallway conversations, taste, and
-ten years of knowing what the PM probably meant. Humans are good at gaps.
+Some of this is just what PRDs are, compiled for human engineers: intent
+squeezed into prose, gaps filled by hallway conversations, taste, and years
+of knowing what the PM probably meant. Humans are good at gaps.
 Agents don't do hallway conversations. They build what you wrote, at machine
 speed, including the parts you wrote carelessly at 11pm.
 
-What I started doing, after one incident I'll get to: every requirement I
-hand an agent has to carry its receipt. The ticket, the quote, the number
-that caused it. This post is the artifact that fell out of that rule, how it
-actually behaves, and where I think it's probably wrong. I'm posting it
-because most of it cost me agent compute and one embarrassing evening to
-learn, and it seems wasteful for everyone to learn it the same way.
+Two rules came out of that stretch. The skill router taught me the first: an
+agent needs a compiled finish line, not prose direction. The second came from
+an incident I'll get to: every requirement I hand an agent has to carry its
+receipt. The ticket, the quote, the number that caused it. This post is the
+artifact that fell out of those two rules, how it actually behaves, and where
+I think it's probably wrong. I'm posting it because most of it cost me agent
+compute, one abandoned project, and one embarrassing evening to learn, and it
+seems wasteful for everyone to learn it the same way.
 
 ## 2. What I found when I went looking
 
 Before building anything, I went looking for who already solves this. The
 spec tools are good: GitHub's Spec Kit (122k stars, thirty agent
 integrations), AWS's Kiro, BMAD-METHOD (50k stars). Free, maintained, and not
-something I'm competing with. But every one of them starts the same way: an
-engineer types a prompt into an IDE. Spec Kit even ships a PM bundle, and
-what it helps you do is write a better prompt. The spec is only ever as true
-as that prompt.
+my competition. But every one of them starts the same way: an engineer types
+a prompt into an IDE. Spec Kit even ships a PM bundle; it helps you write a
+better prompt. The spec is only ever as true as that prompt.
 
 The PM tools I know end at the other border. Feedback synthesizers, discovery
 platforms: they produce a human-readable doc and stop. Between "what users
@@ -50,10 +60,9 @@ So the rule I work from now: a spec without evidence is just a prompt. I'd
 never merge code with no history. I got tired of dispatching intent with
 none.
 
-And when something does go wrong, provenance is what makes it triageable.
-Without it, I can't tell whether the agent was wrong, the spec was wrong, or
-the request was wrong. Those have completely different fixes, and I was
-guessing which one to apply.
+And when something goes wrong, provenance is what makes it triageable:
+without it I can't tell whether the agent was wrong, the spec was wrong, or
+the request was wrong, and those have different fixes.
 
 ## 3. The contract
 
@@ -86,14 +95,13 @@ executable. The seventh makes it checkable, and it's enforced mechanically:
 the validator fails the contract (exit 1, no dispatch) if any criterion lacks
 evidence. A refusal, not a lint warning.
 
-You can watch the gate work in about thirty seconds, on your own machine:
-clone the repo, delete the evidence block under AC2 in the example contract,
-and the validator exits 1: `ERROR V6: acceptance_criteria[AC2] has zero
-evidence entries`. No dispatch, no agent, no exceptions. That example's AC2
-also carries a real receipt: it cites the incident that caused it. The link
-is marked illustrative because my tracker is private, but the incident is
-real, and it's the next section's story, because it's the reason this field
-exists.
+You can watch the gate work in thirty seconds on your own machine: clone the
+repo, delete the evidence block under AC2 in the example contract, and the
+validator exits 1: `ERROR V6: acceptance_criteria[AC2] has zero evidence
+entries`. No dispatch, no exceptions. The example's AC2 carries a real
+receipt too: it cites the incident that caused it (the link says illustrative
+because my tracker is private; the incident is real, and it's the next
+section's story).
 
 The posture isn't new for me; it's how the dispatcher already handled
 vagueness. Ask it to build a loose issue and it refuses, and the refusal
@@ -115,8 +123,8 @@ audit; and audit is cheap precisely because everything is quoted in place. A
 hallucinated PRD leaves no trail at all. A fabricated receipt leaves a
 written one, in the author's own hand.
 
-The companion rule is cultural, and I'd rather say that plainly than dress it
-up: never invent evidence. If a criterion has no evidence, that's a finding
+The companion rule is cultural, and I'll say that plainly: never invent
+evidence. If a criterion has no evidence, that's a finding
 about the feature request, and the right move is to gather the evidence or
 cut the criterion. A schema can make lying visible. It can't make people
 honest. I think that's still worth having.
@@ -138,8 +146,8 @@ against my own agent fleet every night. That system:
   the issue never advances on vibes.
 
 You can't inspect any of that. The system is private, tangled in my homelab,
-and full of references to people and products that aren't mine to share. So
-it's n=1, self-reported, by the person selling the schema. Grade the repo
+and full of references that aren't mine to share. So it's n=1, self-reported,
+by the person selling the schema. Grade the repo
 instead: the example contract in it is reconstructed from the system's real
 test fixtures, and the validator runs on your machine in seconds. And it's
 why next week I'm running the whole loop in public, on my live product: real
@@ -149,9 +157,9 @@ Everything documented; the loop diary publishes here as it happens.
 
 The evidence field itself came out of an incident, not a principle. A
 redelivered webhook once queued a second agent against work already in
-flight: two agents, one branch, two full turn budgets burned in sixty
-seconds. The fix, an atomic admission guard, is in the system now, and its
-contract cites that incident as evidence. That's the loop working the way I
+flight: two agents, one branch, two full turn budgets burned in a minute.
+The fix, an atomic admission guard, cites that incident as evidence in its
+contract. That's the loop working the way I
 want it to: the failure becomes a link, the link becomes a criterion, the
 criterion becomes a test.
 
