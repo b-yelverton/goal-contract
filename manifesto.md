@@ -11,8 +11,8 @@ projects, and the failure mode I know best isn't the agent that crashes. It's
 the agent that builds the wrong thing, beautifully.
 
 One of these is still sitting in my repo. A couple of weeks ago I was
-building a skill router: a piece of my agent config that was supposed to load
-and trial skills without dumping the whole skill universe into context. I
+building a skill router: a piece of my agent config meant to load and trial
+skills without dumping the whole skill universe into context. I
 never compiled a contract for it. I handed the agents direction in prose, run
 after run, and they kept making things. Probably well-coded things. None of
 it was what I asked for, none of it actionable, and every run drifted further
@@ -22,8 +22,8 @@ of plausible, reviewable, wrong, tests included.
 
 When a human engineer misunderstands a requirement, they wander off and come
 back with questions. My agents come back with working code and total
-confidence, and afterward I can't reconstruct which instruction of mine they
-were obeying. The code isn't the expensive part. The expensive part is not
+confidence, and I can't reconstruct which instruction of mine they were
+obeying. The code isn't the expensive part. The expensive part is not
 being able to answer a basic question: which line of what I asked for was
 ever true?
 
@@ -51,10 +51,10 @@ my competition. But every one of them starts the same way: an engineer types
 a prompt into an IDE. Spec Kit even ships a PM bundle; it helps you write a
 better prompt. The spec is only ever as true as that prompt.
 
-The PM tools I know end at the other border. Feedback synthesizers, discovery
-platforms: they produce a human-readable doc and stop. Between "what users
-actually said" and "what the agent gets told to build," nothing carries the
-why across. That's the gap I kept falling into.
+The PM tools I know end at the other border: feedback synthesizers and
+discovery platforms produce a human-readable doc and stop. Between "what
+users actually said" and "what the agent gets told to build," nothing carries
+the why across. That's the gap I kept falling into.
 
 So the rule I work from now: a spec without evidence is just a prompt. I'd
 never merge code with no history. I got tired of dispatching intent with
@@ -120,7 +120,7 @@ otherwise. What I can do is make fabrication leave fingerprints. The excerpt
 field forces the actual words to be written down, attached to a source, next
 to the criterion they claim to justify. Presence is mechanical; truth is
 audit; and audit is cheap precisely because everything is quoted in place. A
-hallucinated PRD leaves no trail at all. A fabricated receipt leaves a
+hallucinated PRD leaves no trail. A fabricated receipt leaves a
 written one, in the author's own hand.
 
 The companion rule is cultural, and I'll say that plainly: never invent
