@@ -86,17 +86,24 @@ executable. The seventh makes it checkable, and it's enforced mechanically:
 the validator fails the contract (exit 1, no dispatch) if any criterion lacks
 evidence. A refusal, not a lint warning.
 
-The part I didn't design: when I ran the schema's own smoke test, feeding a
-raw feature request ("users keep asking for a CSV export of the weekly
-digest") through the skill, the drafting agent quoted the support ticket
-verbatim ("I paste it into our board pack manually every Friday"), quoted the
-interview ("I don't want a dashboard, I want a file"), and quoted the usage
-pull (37 of 210 workspaces, 4+ weeks running). Then it added a security
-criterion nobody asked for (every request for an export is also a request to
-scope that export to the right workspace) and, because the schema forced it
-to cite evidence for that too, it stopped and disclosed in prose: *not
-user-requested; mandatory engineering guardrail.* I didn't write that
-behavior in. It fell out of the field being required.
+You can watch the gate work in about thirty seconds, on your own machine:
+clone the repo, delete the evidence block under AC2 in the example contract,
+and the validator exits 1: `ERROR V6: acceptance_criteria[AC2] has zero
+evidence entries`. No dispatch, no agent, no exceptions. That example's AC2
+also carries a real receipt: it cites the incident that caused it. The link
+is marked illustrative because my tracker is private, but the incident is
+real, and it's the next section's story, because it's the reason this field
+exists.
+
+The posture isn't new for me; it's how the dispatcher already handled
+vagueness. Ask it to build a loose issue and it refuses, and the refusal
+hands back a draft: *Acceptance criteria are missing or not executable.
+Draft G/W/T AC: Given the intended user and current repo context are
+explicit; When the requested change is implemented; Then the named behavior
+is verifiably true with a concrete command or manual check.* Issues come
+back better the second time. The evidence field points the same refusal at a
+different question: not "can an agent check this?" but "why does this
+criterion exist at all?"
 
 Now the honest limit, because it's the first thing a skeptical reader should
 ask about: the validator checks that a link exists, not that the link is
