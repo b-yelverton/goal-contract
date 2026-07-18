@@ -11,7 +11,7 @@ GitHub Spec Kit, AWS Kiro, and BMAD-METHOD already own those, and they're good.
 A goal contract is the layer above them: intent with provenance, which compiles
 *into* whatever your agent harness already reads.
 
-**Manifesto (the why):** [[MANIFESTO-URL — Brett fills at publish time]]
+**Manifesto (the why):** https://northofzero.substack.com/p/my-agents-kept-building-the-wrong
 
 ## Quickstart
 
